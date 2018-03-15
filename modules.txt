@@ -1,2 +1,3 @@
 snakeMonster,SA000,SA001,SA002,SA073
 snake,SA003,SA004,SA044
+wirelessSnakeMonster,SA005,SA006
