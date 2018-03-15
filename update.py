@@ -12,6 +12,7 @@ def writeCSV(filename, moduleLists):
     with open(filename, 'w') as csvfile:
         moduleWriter = csv.writer(csvfile)
         maxLen = max([len(moduleList) for moduleList in moduleLists])
+        moduleLists = [['Group Name']] + moduleLists
         for moduleList in moduleLists:
             if len(moduleList) < maxLen:
                 moduleList += [''] * (maxLen - len(moduleList))
