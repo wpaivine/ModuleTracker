@@ -40,7 +40,7 @@ def getModuleList(listName):
     else:
         return moduleLists[listName]
 
-def updateModuleList(listName, modules):
+def updateModuleList(listName, modules, author):
     '''Use this function to update the stored list associated with the name
     `listName` with list of strings `modules`. Requires GitPython'''
     if GIT == False:
@@ -48,24 +48,35 @@ def updateModuleList(listName, modules):
         list', fiel=sys.stderr)
     else:
         moduleLists = _loadCSV()
+        if listName in moduleLists:
+            oldVals = moduleLists[listName]
+        else:
+            oldVals = 'N/A'
         moduleLists[listName] = modules
         listDump = [[key]+moduleLists[key] for key in moduleLists]
         _writeCSV(listDump)
-        _updateGit()
+        _updateGit('Updated moduleList "{}" from \n{}\n to \
+                \n{}\n'.format(listName, oldVals, modules), author)
 
-def _updateGit():
+def _updateGit(message, author):
     if GIT == False:
         print('GitPython not installed, please install before updating git \
                 repo', file=sys.stderr)
     else:
-        pass
+        repo.git.add(CSVFILE)
+        repo.git.commit('-m', message, author=author)
+        repo.git.push()
 
 
 def _syncCSV():
     if GIT == False:
         urllib.request.urlretrieve(RAW_URL, FILENAME)
     else:
-        repo.remotes.origin.pull()
+        try:
+            repo.remotes.origin.pull()
+        except: # If can't connect
+            pass
+        repo.git.checkout(CSVFILE)
 
 
 def _installGitPython():
