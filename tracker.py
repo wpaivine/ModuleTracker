@@ -1,4 +1,12 @@
 #!/bin/env python3
+'''Main script for syncing the module names for the various robots using git.
+This file can be run directly to edit which modules are used in each robot, or
+the git repo can be imported as a module in code. This file can be run as
+    
+    python tracker.py -u
+
+if you only want to update the stored values, and don't want the GUI to pop up.
+'''
 import csv
 import sys
 import pip
@@ -85,7 +93,8 @@ repo', file=sys.stderr)
 
 def _syncCSV():
     if GIT == False:
-        urllib.request.urlretrieve(RAW_URL, FILENAME)
+        urllib.request.urlretrieve(RAW_URL, FILENAME+'.tmp')
+        os.replace(FILENAME+'.tmp', FILENAME)
     else:
         try:
             repo.remotes.origin.pull()
@@ -120,6 +129,12 @@ def _writeCSV(moduleLists):
 
 
 if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '-u':
+            _syncCSV()
+            exit()
     from tkinter import *
     from tkinter import messagebox, simpledialog
     class Dialog(Listbox):
@@ -205,7 +220,3 @@ Would you like to install it now?'):
     Button(master, text = 'Add', command = interface.addList).grid(row = 0, column = 1, columnspan = 1)
     listNames.poll(interface.updateDisplayedList)
     mainloop()
-
-    snakeMonster = ['snakeMonster','SA000','SA001','SA002','SA073']
-    snake = ['snake','SA003','SA004','SA044']
-    wSnakeMonster = ['wirelessSnakeMonster','SA005','SA006']
